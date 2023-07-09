@@ -22,7 +22,34 @@ music.addEventListener("canplay", () => {
     music.volume = 0.2
     music.play();
 });
-music.addEventListener("ended", function() {
+const textElement = document.getElementById('flip');
+let change = -1;
+let ran = false;
+function changeText() {
+  textElement.innerHTML = 'Ball Pong';
+  change *= -1
+}
+function changeBack() {
+    textElement.innerHTML = 'gnoP llaB';
+    change *= -1
+}
+function CHECK() {
+    if (change === -1) {
+        changeText();
+    } else if (change === 1) {
+        changeBack();
+    }
+    console.log(change)
+
+}
+function START() {
+    setTimeout(() => {
+        CHECK();
+        START();
+    }, 2500);
+}
+START();
+  music.addEventListener("ended", function() {
     // Restart the playback from the beginning
     music.volume = 0.2
     music.currentTime = 0;
@@ -33,7 +60,7 @@ class Ball {
         this.BallBullet = true;
         this.bounds = new Rect(canvas.width/2,canvas.height/2,20,20)
         this.speed = 3;
-        this.direction = Math.floor(Math.random() * 3) - 1;
+        this.direction = Math.floor(Math.random() * 4) - 1;
         this.angle = 0;
         this.moving = false;
         this.fired = false;
@@ -42,13 +69,16 @@ class Ball {
     }
     draw() {
         ctx.shadowColor = "gray";
-        ctx.shadowBlur = bloom;
+        ctx.shadowBlur = bloom/4;
         ctx.fillStyle = "black"
         ctx.fillRect(this.bounds.x,this.bounds.y,this.bounds.w,this.bounds.h)
     }   
     update() {
         if (this.direction === 0) {
             this.direction = -1
+        }
+        if (this.direction === 3) {
+            this.direction = 1
         }
         if (this.bounds.x <= 0) {
             score += 1;
@@ -232,29 +262,40 @@ if (Power1RandomNum === 1) {
 if (Power1RandomNum === 2) {
     Power2RandomNum = 1
 }
-let RandomMATCH = Math.floor(Math.random() * 2) + 1
+let RandomMATCH = Math.floor(Math.random() * 3) + 1
 function RANDOM_PowerUp() {
     powerUp.play();
-    console.log()
+    console.log("Ranmdom Match" + RandomMATCH)
     if (RandomMATCH === Power1RandomNum) {
         let savedSpeed = player.speed;
         player.speed *= 1.5
+        console.log("SPEED")
+
         setTimeout(() => {
             player.speed = savedSpeed
         }, 2000);
-        RandomMATCH = Math.floor(Math.random() * 2) + 1
+        RandomMATCH = Math.floor(Math.random() * 3) + 1
+    }
+    if (RandomMATCH === 3) {
+        let savedSlowSpeed = player.speed;
+        player.speed /= 2.5
+        console.log("SLOW DIOWN")
+        setTimeout(() => {
+            player.speed = savedSlowSpeed
+        }, 4000);
+        RandomMATCH = Math.floor(Math.random() * 3) + 1
     }
     if (RandomMATCH === Power2RandomNum) {
         let savedW = player.bounds.w
         let savedH = player.bounds.h
         player.bounds.w *= 1.5
         player.bounds.h *= 1.5
+        console.log("SIZE")
         setTimeout(() => {
             player.bounds.w = savedW
             player.bounds.h = savedH
         }, 2000);
-        RandomMATCH = Math.floor(Math.random() * 2) + 1
-
+        RandomMATCH = Math.floor(Math.random() * 3) + 1
     }
 }
 

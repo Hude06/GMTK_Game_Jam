@@ -11,7 +11,10 @@
 <body>  
     <div id = "fullscreen">
         <div id="menu">
-            <h1 id ="h1">Temp Name</h1>
+            <h1 class = "flipH"  id = "flip">gnoP llaB</h1>
+            <h3 id = "Controlls">W and S or Arrow Keys to play</h3>
+            <h3 id ="Nothing">Don't Get Hit</h3>
+
             <h2 id = "Start">Press To Start:</h2>
         </div>
         <h2 id = "score">0</h2>
@@ -19,6 +22,20 @@
     </div>
     <script type = "module" src="./Game.js"></script>
     <style>
+        body{
+            background-color:   #fff7f8  ;
+        }
+        .flipH {
+            transform: scale(-1, 1);
+            -moz-transform: scale(-1, 1);
+            -webkit-transform: scale(-1, 1);
+            -o-transform: scale(-1, 1);
+            -ms-transform: scale(-1, 1);
+            transform: scale(-1, 1);
+            /* position: absolute; */
+            z-index: 1;
+            font-size: 8vmin;
+        }
         button {
             z-index: 1;
             font-size: 3vmin;
@@ -31,14 +48,27 @@
 
         }
         h1 {
+            z-index: 1;
             font-family: 'Open Sans', sans-serif;
-            font-size: 100px;
-            margin-top: -10%;
+            margin-top: -14%;
         }
         h2 {
+            z-index: 1;
             font-family: 'Open Sans', sans-serif;
             font-size: 30px;
-            /* margin-top: -10%; */
+            margin-top: -10%;
+        }
+        #Nothing {
+            z-index: 1;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 40px;
+            margin-top: -8%;
+        }
+        #Controlls {
+            z-index: 1;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 40px;
+            margin-top: -2%;
         }
         #menu {
             visibility: visible;
@@ -58,7 +88,7 @@
         }
         canvas{
             visibility: visible;
-            border: 2px solid rgb(0, 0, 0);
+            border: 7px solid rgb(0, 0, 0);
             padding-left: 0;
             padding-right: 0;
             display: block;
