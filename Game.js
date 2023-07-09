@@ -11,6 +11,7 @@ let mode = "menu"
 let coinFlip = false;
 const music = new Audio();
 music.src = "./Music.mp3";
+let levelON = 0;
 music.addEventListener("canplay", () => {
     music.volume = 0.2
     music.play();
@@ -53,7 +54,7 @@ class Ball {
                 this.timeoutHandle = setTimeout(()=>{
                     this.fired = false
                 },200)
-            }
+        }
         }else {
             this.speed = this.savedSpeed
             this.ran = false;
@@ -61,11 +62,11 @@ class Ball {
         }
         if (this.bounds.x <= 0) {
             score += 1;
-            mode = "reset"
+            player.reset();
         }
         if (this.bounds.x >= canvas.width) {
             score += 1;
-            mode = "reset"
+            player.reset();
         }
         this.bounds.y += this.angle
         this.bounds.x -= this.direction*this.speed;
@@ -119,6 +120,9 @@ class Ball {
 }
 class Padel {
     constructor(x,y,d) {
+        this.d = d
+        this.x = x
+        this.y = y
         this.coinFlip = Math.floor(Math.random() * 2)
         this.direction = d;
         this.y = y
@@ -126,6 +130,7 @@ class Padel {
         this.bounds = new Rect(x,y,10,125)
         this.ran = false;
         this.fired = false
+        this.fireRATE = 5;
     }
     draw() {
         ctx.fillStyle = "black"
@@ -139,7 +144,7 @@ class Padel {
             this.fired = true
             this.timeoutHandle = setTimeout(()=>{
                 this.fired = false
-            },2000)
+            },this.fireRATE*1000)
         }
         if (player.bounds.y >= this.bounds.y+this.bounds.w/2) {
             this.bounds.y += this.speed
@@ -152,27 +157,15 @@ class Padel {
             player.direction *= -1
         }
     }
-}
-class Coin {
-    constructor() {
-        this.visable = true;
-        this.bounds = new Rect(Math.floor(Math.random() * canvas.width-200)+200, Math.floor(Math.random() * canvas.height-200)+200,20,20)
-    }
-    draw() {
-
-        if (this.visable) {
-            ctx.shadowColor = "yellow";
-            ctx.shadowBlur = 0;
-            ctx.fillStyle = "gold";
-            ctx.fillRect(this.bounds.x, this.bounds.y, this.bounds.w, this.bounds.h);
-        }
-    }
-    update() {
-        if (this.visable) {
-            if (this.bounds.intersects(player.bounds) || player.bounds.intersects(this.bounds)) {
-                this.visable = false;
-            }
-        }
+    reset() {
+        this.coinFlip = Math.floor(Math.random() * 2)
+        this.direction = this.d;
+        this.speed = 2;
+        this.bounds.x = this.x
+        this.bounds.y = this.y
+        this.bounds.h = 125
+        this.ran = false;
+        this.fired = false
     }
 }
 class Bullet {
@@ -201,19 +194,7 @@ class Bullet {
     }
 }
 let bullets = []
-let CoinSpawnRate = 400
-let CoinNum = Math.floor(Math.random() * CoinSpawnRate)+1
-let CoinNumToMatch = Math.floor(Math.random() * CoinSpawnRate)+1
 let bloom = 20
-function GenerateCoins() {
-    if (CoinNum === CoinNumToMatch) {
-        coins.push(new Coin);
-        CoinNum = Math.floor(Math.random() * CoinSpawnRate)+1
-    } else {
-        CoinNumToMatch = Math.floor(Math.random() * CoinSpawnRate)+1
-    }
-
-}
 function DrawWalls() {
     ctx.fillStyle = "gold"
     ctx.shadowColor = "pink";
@@ -222,8 +203,6 @@ function DrawWalls() {
     ctx.fillRect(canvas.width-5,0,10,canvas.height)
 
 }
-let coin = new Coin();
-let coins = [coin]
 let AI1 = new Padel(10,100,-1);
 let AI2 = new Padel(canvas.width-20,500,1);
 let player = new Ball();
@@ -243,6 +222,23 @@ function Loop() {
         document.getElementById("menu").style.visibility = "visible"
     }
     if (mode === "game") {
+        if (levelON === 0) {
+            levelON = 1
+            alert("Collect 3 Points to move on to the next level")
+        }
+        if (levelON === 2) {
+            for (let i = 0; i < padels.length; i++) {
+                padels[i].fireRATE -= 1;
+            }
+            levelON = 3;
+            score = 0;
+            alert("Collect 5 Points to move on to the next level")
+            mode = "reset"
+        }
+        if (score >= 3) {
+            levelON = 2;
+        }
+
         scoreElement.style.visibility = "visible"
         document.getElementById("menu").style.visibility = "hidden"
         for (let i = 0; i < bullets.length; i++) {
@@ -250,17 +246,12 @@ function Loop() {
             bullets[i].update();
         }
         scoreElement.innerHTML = ""+score
-        for (let i = 0; i < coins.length; i++) {
-            coins[i].draw();
-            coins[i].update();
-        }
         for (let i = 0; i < padels.length; i++) {
             padels[i].speed = (score/4)+1
             padels[i].draw();
             padels[i].update()
         }
         DrawWalls();
-        GenerateCoins();
         player.draw();
         player.update();
         particleSource.draw_particles(ctx,238, 134, 149)
@@ -276,6 +267,11 @@ function Loop() {
             coinFlip = false
         }
         player.reset();
+        bullets = []
+        currentKey.clear();
+        for (let i = 0; i < padels.length; i++) {
+            padels[i].reset();
+        }
         mode = "game"
     }
     requestAnimationFrame(Loop)
