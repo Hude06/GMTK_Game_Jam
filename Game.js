@@ -21,7 +21,7 @@ music.addEventListener("ended", function() {
     music.volume = 0.2
     music.currentTime = 0;
     music.play();
-  });
+});
 class Ball {
     constructor() {
         this.BallBullet = true;
@@ -235,8 +235,17 @@ function Loop() {
             alert("Collect 5 Points to move on to the next level")
             mode = "reset"
         }
+        if (levelON === 4) {
+            levelON = 5;
+            score = 0;
+            alert("Collect 10 Points to move on to the next level")
+            mode = "reset"
+        }
         if (score >= 3) {
             levelON = 2;
+        }
+        if (score >= 5) {
+            levelON = 4
         }
 
         scoreElement.style.visibility = "visible"
@@ -273,6 +282,7 @@ function Loop() {
             padels[i].reset();
         }
         mode = "game"
+        console.log(bullets  )
     }
     requestAnimationFrame(Loop)
 }
