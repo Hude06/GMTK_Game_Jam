@@ -9,9 +9,6 @@ let score = 0;
 let KeyboardEnabled = true
 let mode = "menu"
 let coinFlip = false;
-const audioCtx = new AudioContext();
-const analyser = audioCtx.createAnalyser();
-const destination = audioCtx.destination;
 const music = new Audio();
 music.src = "./Music.mp3";
 music.addEventListener("canplay", () => {
@@ -27,7 +24,7 @@ music.addEventListener("ended", function() {
 class Ball {
     constructor() {
         this.BallBullet = true;
-        this.bounds = new Rect(canvas.width/2,canvas.height/2,10,10)
+        this.bounds = new Rect(canvas.width/2,canvas.height/2,20,20)
         this.speed = 3;
         this.direction = 1;
         this.angle = 0;
@@ -108,6 +105,7 @@ class Ball {
                     return;
                 } else {
                     alert("You Died")
+                    location.reload()
                 }
             }
          }
@@ -180,7 +178,7 @@ class Coin {
 class Bullet {
     constructor(player) {
         this.player = player
-        this.bounds = new Rect(player.bounds.x,player.bounds.y,10,10)
+        this.bounds = new Rect(player.bounds.x,player.bounds.y,15,15)
         this.speed = 10;
         this.firedDirection = player.direction;
     }
