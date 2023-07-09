@@ -314,6 +314,7 @@ function Loop() {
         document.getElementById("menu").style.visibility = "visible"
     }
     if (mode === "game") {
+
         if (levelON === 0) {
             levelON = 1
             alert("Collect 5 Points to move on to the next level")
@@ -341,12 +342,12 @@ function Loop() {
         }
 
         scoreElement.style.visibility = "visible"
+        scoreElement.innerHTML = ""+score
         document.getElementById("menu").style.visibility = "hidden"
         for (let i = 0; i < bullets.length; i++) {
             bullets[i].draw()
             bullets[i].update();
         }
-        scoreElement.innerHTML = ""+score
         for (let i = 0; i < padels.length; i++) {
             padels[i].speed = (score/4)+1
             padels[i].draw();
