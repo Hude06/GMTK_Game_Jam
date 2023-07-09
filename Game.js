@@ -12,6 +12,12 @@ let coinFlip = false;
 const music = new Audio();
 music.src = "./Music.mp3";
 let levelON = 0;
+let Explode = new Audio();
+Explode.src = "./explosion.wav"
+let shoot = new Audio();
+shoot.src = "./laserShoot.wav"
+let powerUp = new Audio();
+powerUp.src = "./powerUP.wav"
 music.addEventListener("canplay", () => {
     music.volume = 0.2
     music.play();
@@ -27,7 +33,7 @@ class Ball {
         this.BallBullet = true;
         this.bounds = new Rect(canvas.width/2,canvas.height/2,20,20)
         this.speed = 3;
-        this.direction = 1;
+        this.direction = Math.floor(Math.random() * 3) - 1;
         this.angle = 0;
         this.moving = false;
         this.fired = false;
@@ -41,6 +47,9 @@ class Ball {
         ctx.fillRect(this.bounds.x,this.bounds.y,this.bounds.w,this.bounds.h)
     }   
     update() {
+        if (this.direction === 0) {
+            this.direction = -1
+        }
         if (this.bounds.x <= 0) {
             score += 1;
             player.reset();
@@ -59,6 +68,7 @@ class Ball {
             }
             if (this.fired === false) {
                 bullets.push(new Bullet(player));
+                shoot.play();
                 this.fired = true
                 this.timeoutHandle = setTimeout(()=>{
                     this.fired = false
@@ -110,6 +120,7 @@ class Ball {
                 if (bullets[i].player.BallBullet) {
                     return;
                 } else {
+                    Explode.play();
                     alert("You Died")
                     location.reload()
                 }
@@ -200,9 +211,6 @@ class Bullet {
 }
 let bullets = []
 let bloom = 20
-function RandomNUM(min, max) {
-    return Math.floor(Math.random() * (max - min) ) + min;
-  }
 function DrawWalls() {
     ctx.fillStyle = "gold"
     ctx.shadowColor = "pink";
@@ -215,16 +223,37 @@ let AI1 = new Padel(10,100,-1);
 let AI2 = new Padel(canvas.width-20,500,1);
 let player = new Ball();
 let padels = [AI1,AI2]
-let Power1RandomNum = RandomNUM(1,2)
-let Power2RandomNum = RandomNUM(1,2)
-let RandomMATCH = RandomNUM(1,2)
+let Power2RandomNum = 0;
+let Power1RandomNum = Math.floor(Math.random() * 2) + 1;
+
+if (Power1RandomNum === 1) {
+    Power2RandomNum = 2
+}
+if (Power1RandomNum === 2) {
+    Power2RandomNum = 1
+}
+let RandomMATCH = Math.floor(Math.random() * 2) + 1
 function RANDOM_PowerUp() {
-    if (RandomMATCH === Power1RandomNum || RandomMATCH === Power2RandomNum) {
+    powerUp.play();
+    console.log()
+    if (RandomMATCH === Power1RandomNum) {
         let savedSpeed = player.speed;
-        player.speed *= 2
+        player.speed *= 1.5
         setTimeout(() => {
             player.speed = savedSpeed
         }, 2000);
+        RandomMATCH = Math.floor(Math.random() * 2) + 1
+    }
+    if (RandomMATCH === Power2RandomNum) {
+        let savedW = player.bounds.w
+        let savedH = player.bounds.h
+        player.bounds.w *= 1.5
+        player.bounds.h *= 1.5
+        setTimeout(() => {
+            player.bounds.w = savedW
+            player.bounds.h = savedH
+        }, 2000);
+        RandomMATCH = Math.floor(Math.random() * 2) + 1
 
     }
 }
@@ -246,7 +275,7 @@ function Loop() {
     if (mode === "game") {
         if (levelON === 0) {
             levelON = 1
-            alert("Collect 3 Points to move on to the next level")
+            alert("Collect 5 Points to move on to the next level")
         }
         if (levelON === 2) {
             for (let i = 0; i < padels.length; i++) {
@@ -254,19 +283,19 @@ function Loop() {
             }
             levelON = 3;
             score = 0;
-            alert("Collect 5 Points to move on to the next level")
+            alert("Collect 10 Points to move on to the next level")
             mode = "reset"
         }
         if (levelON === 4) {
             levelON = 5;
             score = 0;
-            alert("Collect 10 Points to move on to the next level")
+            alert("Collect 15 Points to move on to the next level")
             mode = "reset"
         }
-        if (score >= 3) {
+        if (score >= 5) {
             levelON = 2;
         }
-        if (score >= 5) {
+        if (score >= 10) {
             levelON = 4
         }
 
