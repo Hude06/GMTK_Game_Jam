@@ -31,7 +31,7 @@ class Ball {
         this.angle = 0;
         this.moving = false;
         this.fired = false;
-        this.savedSpeed = 3;
+        this.savedSpeed = -100;
         this.ran = false;
     }
     draw() {
@@ -41,12 +41,21 @@ class Ball {
         ctx.fillRect(this.bounds.x,this.bounds.y,this.bounds.w,this.bounds.h)
     }   
     update() {
+        if (this.bounds.x <= 0) {
+            score += 1;
+            player.reset();
+            RANDOM_PowerUp();
+        }
+        if (this.bounds.x >= canvas.width) {
+            score += 1;
+            player.reset();
+            RANDOM_PowerUp();
+        }
         if (currentKey.get(" ")) {
             if (this.ran === false) {
                 this.savedSpeed = this.speed
                 this.ran = true;
                 this.speed /= 2;
-
             }
             if (this.fired === false) {
                 bullets.push(new Bullet(player));
@@ -55,21 +64,18 @@ class Ball {
                     this.fired = false
                 },200)
         }
-        }else {
-            this.speed = this.savedSpeed
+        } else {
+            if (this.ran === true) {
+                if (this.savedSpeed > -10) {
+                    this.speed = this.savedSpeed
+                    console.log("RAj")
+                }
+            }
             this.ran = false;
-
-        }
-        if (this.bounds.x <= 0) {
-            score += 1;
-            player.reset();
-        }
-        if (this.bounds.x >= canvas.width) {
-            score += 1;
-            player.reset();
         }
         this.bounds.y += this.angle
         this.bounds.x -= this.direction*this.speed;
+
         if (KeyboardEnabled) {
             if (currentKey.get("ArrowUp") || currentKey.get("w")) {
                 this.angle = 0
@@ -102,7 +108,6 @@ class Ball {
         for (let i = 0; i < bullets.length; i++) {
             if (this.bounds.intersects(bullets[i].bounds) || bullets[i].bounds.intersects(this.bounds)) {
                 if (bullets[i].player.BallBullet) {
-                    console.log("Your own Bullet")
                     return;
                 } else {
                     alert("You Died")
@@ -172,7 +177,7 @@ class Bullet {
     constructor(player) {
         this.player = player
         this.bounds = new Rect(player.bounds.x,player.bounds.y,15,15)
-        this.speed = 10;
+        this.speed = player.speed*5;
         this.firedDirection = player.direction;
     }
     draw() {
@@ -195,6 +200,9 @@ class Bullet {
 }
 let bullets = []
 let bloom = 20
+function RandomNUM(min, max) {
+    return Math.floor(Math.random() * (max - min) ) + min;
+  }
 function DrawWalls() {
     ctx.fillStyle = "gold"
     ctx.shadowColor = "pink";
@@ -207,6 +215,20 @@ let AI1 = new Padel(10,100,-1);
 let AI2 = new Padel(canvas.width-20,500,1);
 let player = new Ball();
 let padels = [AI1,AI2]
+let Power1RandomNum = RandomNUM(1,2)
+let Power2RandomNum = RandomNUM(1,2)
+let RandomMATCH = RandomNUM(1,2)
+function RANDOM_PowerUp() {
+    if (RandomMATCH === Power1RandomNum || RandomMATCH === Power2RandomNum) {
+        let savedSpeed = player.speed;
+        player.speed *= 2
+        setTimeout(() => {
+            player.speed = savedSpeed
+        }, 2000);
+
+    }
+}
+
 function keyboardInit() {
     window.addEventListener("keydown", function (event) {
         currentKey.set(event.key, true);
@@ -282,7 +304,6 @@ function Loop() {
             padels[i].reset();
         }
         mode = "game"
-        console.log(bullets  )
     }
     requestAnimationFrame(Loop)
 }
