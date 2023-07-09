@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet"> 
+    <title>GMTK Game Jam</title>
+</head>
+<body>  
+    <div id = "fullscreen">
+        <div id="menu">
+            <h1 id ="h1">Temp Name</h1>
+            <h2 id = "Start">Press To Start:</h2>
+        </div>
+        <h2 id = "score">0</h2>
+        <canvas width="1900" height="850" id = "canvas"></canvas>
+    </div>
+    <script type = "module" src="./Game.js"></script>
+    <style>
+        button {
+            z-index: 1;
+            font-size: 3vmin;
+            border: 0px;
+            border-radius: 3px;
+            width: 20vmin;
+            height: 10vmin;
+            background-color: aqua;
+            margin: 1vmin;
+
+        }
+        h1 {
+            font-family: 'Open Sans', sans-serif;
+            font-size: 100px;
+            margin-top: -10%;
+        }
+        h2 {
+            font-family: 'Open Sans', sans-serif;
+            font-size: 30px;
+            /* margin-top: -10%; */
+        }
+        #menu {
+            visibility: visible;
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* visibility: hidden; */
+        }
+        #score {
+            visibility: hidden;
+            font-family: 'Open Sans', sans-serif;
+            top: -6vmin;
+            position: absolute;
+            z-index: 1;
+            font-size: 9vmin;
+        }
+        canvas{
+            visibility: visible;
+            border: 2px solid rgb(0, 0, 0);
+            padding-left: 0;
+            padding-right: 0;
+            display: block;
+            overflow: hidden;
+            object-fit: contain;
+            max-width: 100%;
+            max-height: 100%;
+        }
+        #fullscreen
+        {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }           
+    </style>
+</body>
+</html>
